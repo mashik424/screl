@@ -1,0 +1,1 @@
+enum FormPageState { completed, pending }

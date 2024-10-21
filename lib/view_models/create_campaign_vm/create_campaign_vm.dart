@@ -76,7 +76,7 @@ class CreateCampaignViewModel extends StateNotifier<CreateCampaignFormState> {
         _sharedPreferences.get('form_state') as String? ?? '{}',
       ) as Map<String, dynamic>;
 
-  void validateAndSave() {
+  Future<void> validateAndSave() async {
     final result = state.currentPage.body.validateAndSubmit();
 
     if (result.isLeft) return;
@@ -84,6 +84,7 @@ class CreateCampaignViewModel extends StateNotifier<CreateCampaignFormState> {
     _data.addAll(result.right);
 
     log('~~data: $_data');
+    await _sharedPreferences.setString('form_state', json.encode(_data));
 
     if (isLastpage) {
       _currentIndex = 0;
@@ -108,6 +109,7 @@ class CreateCampaignViewModel extends StateNotifier<CreateCampaignFormState> {
   Future<void> saveDraft() async {
     final result = state.currentPage.body.validateAndSubmit();
     if (result.isLeft) return;
-    await _sharedPreferences.setString('form_state', json.encode(result.right));
+    _data.addAll(result.right);
+    await _sharedPreferences.setString('form_state', json.encode(_data));
   }
 }
